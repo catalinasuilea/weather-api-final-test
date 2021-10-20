@@ -1,5 +1,6 @@
 package com.hackerrank.weather.controller;
 
+import com.hackerrank.weather.entities.Weather;
 import com.hackerrank.weather.model.WeatherInput;
 import com.hackerrank.weather.output.WeatherJSON;
 import com.hackerrank.weather.service.WeatherService;

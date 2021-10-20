@@ -18,6 +18,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -48,14 +50,22 @@ public class WeatherService {
 
     @Transactional
     public List<WeatherJSON> searchWeather(String date, String city, String sort) {
-        List<WeatherJSON> weatherList = new ArrayList<>();
+        List<Weather> weatherList = new ArrayList<>();
+
         if(date != null) {
             LocalDate localDate = LocalDate.parse(date,formatter);
             weatherList = weatherRepository.findAllByDate(localDate);
         }
-        else if(city != null) {
-            weatherList = weatherRepository.findAllByCity(city);
+
+        if(city != null) {
+            weatherList = weatherRepository.findAllByCityIgnoreCase(city);
         }
-        return weatherList;
+
+//        else if (sort.equals("date")) {
+//            LocalDate localDate1 = LocalDate.parse(date,formatter);
+//            weatherList = weatherRepository.findAllByDateOrderByDateAsc(localDate1);
+//        }
+
+        return weatherList.stream().map(weather -> WeatherMapper.weatherToJSON(weather)).collect(Collectors.toList());
     }
 }
