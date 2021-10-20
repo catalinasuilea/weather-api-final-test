@@ -14,6 +14,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -39,5 +43,19 @@ public class WeatherService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Weather not found"));
 
         return new ResponseEntity<WeatherJSON>(WeatherMapper.weatherToJSON(weather), HttpStatus.OK);
+    }
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    @Transactional
+    public List<WeatherJSON> searchWeather(String date, String city, String sort) {
+        List<WeatherJSON> weatherList = new ArrayList<>();
+        if(date != null) {
+            LocalDate localDate = LocalDate.parse(date,formatter);
+            weatherList = weatherRepository.findAllByDate(localDate);
+        }
+        else if(city != null) {
+            weatherList = weatherRepository.findAllByCity(city);
+        }
+        return weatherList;
     }
 }

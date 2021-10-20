@@ -29,7 +29,7 @@ public class WeatherApiRestController {
 
     @GetMapping("/weather")
     public List<WeatherJSON> getWeatherInfo(@Valid @Pattern(regexp = Patterns.YYYY_MM_DD_REGEXP) @RequestParam(required = false) String date, @RequestParam(required = false) String city, @RequestParam(required = false) String sort){
-       return null;
+       return weatherService.searchWeather(date, city, sort);
     }
 
     @GetMapping("/weather/{id}")
