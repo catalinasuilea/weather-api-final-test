@@ -1,9 +1,11 @@
 package com.hackerrank.weather.model;
 
+import com.hackerrank.weather.utils.Patterns;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Builder
@@ -15,6 +17,8 @@ public class WeatherInput{
     private Integer id;
 
     @Schema(name = "date", description = "The date for weather", example = "2021-09-27")
+    @Pattern(regexp = "^(19|20)\\d\\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$",
+            message = "The date must match the pattern: yyyy-MM-dd")
     @Valid
     private String date;
 
@@ -35,6 +39,4 @@ public class WeatherInput{
         this.state = state;
         this.temperatures = temperatures;
     }
-
-
 }

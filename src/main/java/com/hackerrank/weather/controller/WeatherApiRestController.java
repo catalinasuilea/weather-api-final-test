@@ -9,14 +9,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
+
 
 @RestController
 public class WeatherApiRestController {
@@ -35,7 +34,7 @@ public class WeatherApiRestController {
 
     @GetMapping("/weather/{id}")
     public ResponseEntity<WeatherJSON> getWeatherById(@Valid @NotNull @PathVariable Integer id) {
-       return null;
+       return weatherService.getWeatherById(id);
     }
 
 
@@ -44,9 +43,16 @@ public class WeatherApiRestController {
      *
      */
     @PostMapping(path = "/weather")
+    @Operation(summary = "Create a new weather data record", tags = {"Weather",},
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Adds a weather to the DB and returns a JSON of it.",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = WeatherJSON.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized."),
+                    @ApiResponse(responseCode = "422", description = "Business error."),
+                    @ApiResponse(responseCode = "500", description = "Internal server error.")
+            })
     public ResponseEntity<WeatherJSON> submitWeather(@RequestBody @Valid final WeatherInput weatherInput) {
-       return null;
+        return weatherService.createWeather(weatherInput);
     }
-
-
 }
