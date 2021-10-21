@@ -14,7 +14,6 @@ public class WeatherMapper {
 
     public static Weather inputToWeather(WeatherInput weatherInput) {
         return Weather.builder()
-                .id(weatherInput.getId())
                 .date(LocalDate.parse(weatherInput.getDate(),formatter))
                 .lat(weatherInput.getLat())
                 .lon(weatherInput.getLon())

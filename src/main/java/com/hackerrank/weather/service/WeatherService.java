@@ -57,7 +57,7 @@ public class WeatherService {
             weatherList = weatherRepository.findAllByDate(localDate);
         }
         else if(city != null ) {
-            List<String> cities =  Arrays.asList(city.split(", [ ]*"));
+            List<String> cities =   Arrays.stream(city.split(",")).map(String::trim).collect(Collectors.toList());
             weatherList = weatherRepository.findAllByCityInIgnoreCase(cities);
         }
         else  if (sort.equals("date")) {
