@@ -1,6 +1,5 @@
 package com.hackerrank.weather.controller;
 
-import com.hackerrank.weather.entities.Weather;
 import com.hackerrank.weather.model.WeatherInput;
 import com.hackerrank.weather.output.WeatherJSON;
 import com.hackerrank.weather.service.WeatherService;
@@ -29,11 +28,22 @@ public class WeatherApiRestController {
     }
 
     @GetMapping("/weather")
+    @Operation(summary = "Get data record weather info", tags = {"Weather",},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Get array of matching records, ordered by different fields",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = WeatherJSON.class)))})
     public List<WeatherJSON> getWeatherInfo(@Valid @Pattern(regexp = Patterns.YYYY_MM_DD_REGEXP) @RequestParam(required = false) String date, @RequestParam(required = false) String city, @RequestParam(required = false) String sort){
        return weatherService.searchWeather(date, city, sort);
     }
 
+
     @GetMapping("/weather/{id}")
+    @Operation(summary = "Get weather by id", tags = {"Weather",},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Get weather data record by id",
+                            content = @Content(mediaType = "application/json",
+                                    schema = @Schema(implementation = WeatherJSON.class)))})
     public ResponseEntity<WeatherJSON> getWeatherById(@Valid @NotNull @PathVariable Integer id) {
        return weatherService.getWeatherById(id);
     }
@@ -48,11 +58,7 @@ public class WeatherApiRestController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Adds a weather to the DB and returns a JSON of it.",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = WeatherJSON.class))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized."),
-                    @ApiResponse(responseCode = "422", description = "Business error."),
-                    @ApiResponse(responseCode = "500", description = "Internal server error.")
-            })
+                                    schema = @Schema(implementation = WeatherJSON.class)))})
     public ResponseEntity<WeatherJSON> submitWeather(@RequestBody @Valid final WeatherInput weatherInput) {
         return weatherService.createWeather(weatherInput);
     }
