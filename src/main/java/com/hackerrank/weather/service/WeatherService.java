@@ -17,6 +17,7 @@ import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -52,20 +53,24 @@ public class WeatherService {
     public List<WeatherJSON> searchWeather(String date, String city, String sort) {
         List<Weather> weatherList = new ArrayList<>();
 
-        if(date != null) {
+        if(date == null && city == null && sort == null) {
+            weatherList = weatherRepository.findAll();
+        }
+        else if(date != null) {
             LocalDate localDate = LocalDate.parse(date,formatter);
             weatherList = weatherRepository.findAllByDate(localDate);
         }
-
-        if(city != null) {
-            weatherList = weatherRepository.findAllByCityIgnoreCase(city);
+        else if(city != null ) {
+            List<String> cities =  Arrays.asList(city.split(", [ ]*"));
+            weatherList = weatherRepository.findAllByCityInIgnoreCase(cities);
+        }
+        else  if (sort.equals("date")) {
+            weatherList = weatherRepository.findAllByOrderByDateAsc();
+        }
+        else if(sort.equals("-date")) {
+            weatherList = weatherRepository.findAllByOrderByDateDesc();
         }
 
-//        else if (sort.equals("date")) {
-//            LocalDate localDate1 = LocalDate.parse(date,formatter);
-//            weatherList = weatherRepository.findAllByDateOrderByDateAsc(localDate1);
-//        }
-
-        return weatherList.stream().map(weather -> WeatherMapper.weatherToJSON(weather)).collect(Collectors.toList());
+        return weatherList.stream().map(WeatherMapper::weatherToJSON).collect(Collectors.toList());
     }
 }

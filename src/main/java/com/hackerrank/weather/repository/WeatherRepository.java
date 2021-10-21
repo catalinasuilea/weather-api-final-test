@@ -13,7 +13,13 @@ public interface WeatherRepository extends JpaRepository<Weather, Integer> {
 
       List<Weather> findAllByDate(LocalDate date);
 
-      List<Weather> findAllByCityIgnoreCase(String city);
+      List<Weather> findAllByCityInIgnoreCase(List<String> city);
 
-      List<Weather> findAllByDateOrderByDateAsc(LocalDate date);
+//      List<Weather> findAllByDateOrderByDateAsc(LocalDate date);
+//
+//      List<Weather> findAllByDateOrderByDateDesc(LocalDate date);
+
+      List<Weather> findAllByOrderByDateAsc();
+
+      List<Weather> findAllByOrderByDateDesc();
 }
